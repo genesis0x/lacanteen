@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  name     String
+  role     Role   @default(STAFF)
+}
+
+model Student {
+  id            String         @id @default(cuid())
+  name          String
+  cardId        String         @unique
+  email         String
+  grade         String
+  balance       Float          @default(0)
+  externalCode  String         @unique @default("defaultCode")
+  photo         String?
+  subscriptions Subscription[]
+  transactions  Transaction[]
+}
+
+model Product {
+  id           String        @id @default(cuid())
+  name         String
+  price        Float
+  category     Category      @default(FOOD)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  studentId String
+  productId String
+  amount    Float
+  quantity  Int
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id])
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  studentId String
+  type      SubType
+  amount    Float
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum Category {
+  FOOD
+  BEVERAGE
+  SNACK
+}
+
+enum SubType {
+  ANNUAL
+  TERM
+}
