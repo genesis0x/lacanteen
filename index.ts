@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import cors from 'cors';
-import { sendPurchaseNotificationEmail } from '../src/lib/emailService';
+import { sendPurchaseNotificationEmail } from './src/lib/emailService';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
